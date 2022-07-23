@@ -1,0 +1,94 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+
+<main class="projects">
+    <section class="hero-section text-center">
+      <div class="container container--narrow">
+        <div class="hero-section__box">
+          <h2>Search for <span>Projects</span></h2>
+        </div>
+
+        <div class="hero-section__search">
+          <form id="searchForm" class="form" action="{% url 'projects' %}" method="get">
+            <div class="form__field">
+              <label for="formInput#search">Search By Projects </label>
+              <input class="input input--text" id="searchValue" type="text" name="search_query"
+                placeholder="Search by Project Title" value="{{search_query}}" />
+            </div>
+
+            <button id="searchBtn" class="btn btn--sub btn--lg" >Search</button>
+          </form>
+        </div>
+      </div>
+    </section>
+   
+    <div id="projectsContainer">
+    <section class="projectsList">
+    <div>
+      <div style="display: inline-block;" id="sidebar">
+        <h3 >Filter by category</h3>
+        <ul>
+          <li class="selected" data-url="{% url 'projects-by-category' '' %}">
+            <a href="#" class="category" data-url="{% url 'projects-by-category' '' %}" data-slug=null>All</a>
+          </li>
+          {% for c in categories %}
+            <li >
+              <a href="#" class="category" data-url="{% url 'projects-by-category' c.slug %}" data-slug="{{c.slug}}">{{c.name}}</a>
+            </li>
+          {% endfor %}
+            
+          
+        </ul>
+      </div>
+
+
+      <div style="display: inline-block;" class="container">
+        <div class="grid grid--three">
+        {% if not projects %}
+        <h5>No projects found</h5>
+        {% else %}
+
+        {% for pr in projects %}
+      
+          <div class="column">
+            <div class="card project">
+              <a href="{% url 'project' pr.id %}" class="project">
+                <img class="project__thumbnail" src="{{pr.imageUrl}}" alt="project thumbnail" />
+                <div class="card__body">
+                  <h3 class="project__title">{{pr.title}}</h3>
+                  <p><a class="project__author" href="{% url 'user-profile' pr.owner.id %}">{{pr.owner.name}}</a></p>
+                  <p class="project--rating">
+                    <span style="font-weight: bold;">{{pr.vote_ratio}}%</span> Postitive
+                    feedback out of {{pr.total_votes}} vote{{pr.total_votes|pluralize:"s"}}
+                  </p>
+                  <div class="project__tags">
+                    {% for tag in pr.tag.all %}
+                    <span class="tag tag--pill tag--main">
+                      <small>{{tag}}</small>
+                    </span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+          {% endif %}
+          
+
+        </div>
+      </div>
+    </div>
+    </section>
+    {% include 'pagination.html' with queryset=projects custom_range=custom_range %}
+  </div>
+    
+
+  </main>
+
+  <script type="text/javascript" src="/static/js/projects.js"></script>
+
+
+{% endblock content %}

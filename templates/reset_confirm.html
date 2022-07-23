@@ -1,0 +1,50 @@
+{% extends 'main.html' %}
+
+
+{% block content %}
+
+<style>
+
+input.input[type='text'],
+input.input[type='email'],
+input.input[type='password']
+{
+  min-width: 24rem;
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--color-light);
+  transition: all 0.3s ease-in-out;
+  background-color: var(--color-bg);
+}
+
+input.input[type='text']:focus,
+input.input[type='email']:focus,
+input.input[type='password']:focus,
+input.input[type='text']:active,
+input.input[type='email']:active,
+input.input[type='password']:active
+{
+  outline: none;
+  border: 2px solid var(--color-main);
+}
+
+</style>
+
+<main class="formPage my-xl">
+    <div class="content-box">
+        <div class="formWrapper">
+            <h3>Enter Password</h3>
+            <P>Please enter your new password twice so we can verify you typed it correctly</p>
+            <br>
+
+            <form class="form" method="POST">
+                {% csrf_token %}
+                {{form.as_p}}
+                <input class="btn btn--sub btn--lg  my-md" type="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+</main>
+
+{% endblock content %}

@@ -1,0 +1,55 @@
+
+{% load static %}
+{% block content %}
+<!-- Header Section -->
+<header class="header">
+  <div class="container container--narrow">
+    
+    <nav style="margin: auto;" class="header__nav">
+      
+      <input type="checkbox" id="responsive-menu" />
+      <label for="responsive-menu" class="toggle-menu">
+        <span>Menu</span>
+        <div class="toggle-menu__lines"></div>
+      </label>
+      <ul class="header__menu">
+        <li id="professionals" class="header__menuItem"><a href="{% url 'profiles' %}">Professionals</a></li>
+        <li id="projects" class="header__menuItem"><a href="{% url 'projects' %}">Projects</a></li>
+        <li id="merchandise" class="header__menuItem"><a href="{% url 'store' %}">Merchandise</a></li>
+        
+        {% if request.user.is_authenticated %}
+          {% with total_qty=cart|length %}
+          <li id="cart" class="header__menuItem"><a id="cart-qty" href="{% url 'cart:cart-summary' %}">
+            
+              Cart(<span id="navb-cart-qty">{{total_qty}}</span>)
+            
+          </a></li>
+          {% endwith %}
+        {% else %}
+          <li id="cart" class="header__menuItem"><a id="cart-qty" href="{% url 'cart:cart-summary' %}">
+            Cart
+          </a></li>
+        {% endif %}
+
+        
+        {% if request.user.is_authenticated %}
+
+        {% if unreadCount > 0 %}
+        <li id="inbox" class="header__menuItem"><a href="{% url 'inbox' %}">Inbox(<span>{{unreadCount}}</span>)</a></li>
+        {% else %}
+        <li id="inbox" class="header__menuItem"><a href="{% url 'inbox' %}">Inbox</a></li>
+        {% endif %}
+
+        <li id="account" class="header__menuItem"><a href="{% url 'account' %}">Account</a></li>
+        
+        <li class="header__menuItem"><a id="logBtn" href="{% url 'logout-user' %}" class="btn btn--sub">Logout</a></li>
+        {% else %}
+        
+        <li class="header__menuItem"><a id="logBtn" href="{% url 'login-user' %}" class="btn btn--sub">Login/Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+  {% endblock content %}

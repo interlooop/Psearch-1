@@ -1,0 +1,59 @@
+<section class="projectsList">
+    <div>
+      <div style="display: inline-block;" id="sidebar">
+        <h3 >Filter by category</h3>
+        <ul>
+          <li {% if not category %} class="selected" {% endif %} data-url="{% url 'projects-by-category' '' %}">
+            <a href="#"  class="category" data-url="{% url 'projects-by-category' '' %}" data-slug=null>All</a>
+          </li>
+          {% for c in categories %}
+            <li {% if category.slug == c.slug %} class="selected" {% endif %} data-url="{% url 'projects-by-category' c.slug %}">
+              <a href="#"  class="category" data-url="{% url 'projects-by-category' c.slug %}" data-slug="{{c.slug}}">{{c.name}}</a>
+            </li>
+          {% endfor %}
+            
+          
+        </ul>
+      </div>
+
+
+      <div style="display: inline-block;" class="container">
+        <div class="grid grid--three">
+        {% if not projects %}
+        <h5>No projects found</h5>
+        {% else %}
+
+        {% for pr in projects %}
+      
+          <div class="column">
+            <div class="card project">
+              <a href="{% url 'project' pr.id %}" class="project">
+                <img class="project__thumbnail" src="{{pr.imageUrl}}" alt="project thumbnail" />
+                <div class="card__body">
+                  <h3 class="project__title">{{pr.title}}</h3>
+                  <p><a class="project__author" href="{% url 'user-profile' pr.owner.id %}">By {{pr.owner.name}}</a></p>
+                  <p class="project--rating">
+                    <span style="font-weight: bold;">{{pr.vote_ratio}}%</span> Postitive
+                    feedback out of {{pr.total_votes}} vote{{pr.total_votes|pluralize:"s"}}
+                  </p>
+                  <div class="project__tags">
+                    {% for tag in pr.tag.all %}
+                    <span class="tag tag--pill tag--main">
+                      <small>{{tag}}</small>
+                    </span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+          {% endif %}
+          
+
+        </div>
+      </div>
+    </div>
+    </section>
+
+    {% include 'pagination.html' with queryset=projects custom_range=custom_range %}

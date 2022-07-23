@@ -1,0 +1,139 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box-element" id="form-wrapper">
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            
+                {% if shipping == True %}
+                <div class="row" id="shipping-info">
+                    <hr>
+						<h5>Shipping Information:</h5>
+						<hr>
+						<div class="form-field">
+							<p  style="margin: 5px;" type="text"><strong>Address: </strong>{{address}}</p>
+						</div>
+
+						<div class="form-field">
+							<p  style="margin: 5px;" type="text"><strong>City: </strong>{{city}}</p>
+						</div>
+
+						<div class="form-field">
+							<p  style="margin: 5px;" type="text"><strong>State: </strong>{{state}}</p>
+						</div>
+						<div class="form-field">
+							<p  style="margin: 5px;" type="text"><strong>Zipcode: </strong>{{zipcode}}</p>
+						</div>
+						
+                </div>
+                {% endif %}
+                <hr>
+                
+                <a id="back-button" class="btn btn--sub" type="button" href="{% url 'checkout' %}" >&#x2190; Back to submission</a>
+       
+        </div>
+
+        <br>
+       
+      </div>
+
+      <div class="col-lg-6">
+        <div class="box-element" id="payment-info">
+            <small>Paypal Options</small>
+            <div id="paypal-button-container"></div>
+        </div>
+      </div>
+</div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AfXDNTBc-g6d_4ZI0q8N3vShp2RQXtX6slCx0pONRY5nVVusytlTq4vqhA0yuYyzEYhvbjPDvinStSU4&currency=USD"
+        data-sdk-integration-source="button-factory">
+</script>
+
+
+<script>
+
+function initPaypalBtn(){
+
+    var shipping='{{shipping}}'
+
+    var total='{{total}}'
+
+    paypal.Buttons({
+
+        style:{
+            color:'blue',
+            shape:'rect',
+        },
+        
+        // Set up the transaction
+        createOrder: function(data, actions) {
+            
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: parseFloat(total).toFixed(2)
+                    }
+                }]
+            });d
+        },
+
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+        
+
+        let shippingInfo ={
+            'address':null,
+            'city':null,
+            
+            'state':null,
+            'zipcode':null,
+        }
+
+        if(shipping !='False'){
+            shippingInfo.address='{{address}}'
+            shippingInfo.city='{{city}}'
+            shippingInfo.state='{{state}}'
+            shippingInfo.zipcode='{{zipcode}}'
+        }
+
+      
+        var itemQtyElements=document.getElementsByClassName('itemQty')
+        const itemsQtyList=[]
+
+        for (let i=0; i < itemQtyElements.length ; i++){
+            itemsQtyList.push(parseInt(itemQtyElements[i].innerHTML))
+        }
+       
+        let url='payment-complete/'
+        
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type':'application/json',
+                'X-CSRFToken':csrftoken,
+            },
+            body: JSON.stringify({orderID: data.orderID, 'shipping': shippingInfo,'itemsQtyList':itemsQtyList})
+        })
+        .then(function (){
+            
+                location.href='{% url "payment-successful" %}';
+
+        })
+        
+    }
+    }).render('#paypal-button-container');
+    
+}
+
+initPaypalBtn()
+</script>
+
+{% endblock content %}

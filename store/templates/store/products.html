@@ -1,0 +1,60 @@
+
+
+<section class="projectsList">
+<div>
+<div style="display: inline-block;" id="sidebar">
+  <h3 >Filter by category</h3>
+  <ul>
+    <li {% if not category %} class="selected " {% endif %} data-url="{% url 'products-by-category' '' %}">
+      <a href="#" class="category" data-url="{% url 'products-by-category' '' %}" data-slug=null>All</a>
+    </li>
+    {% for c in categories %}
+      <li {% if category.slug == c.slug %} class="selected" {% endif %} data-url="{% url 'products-by-category' c.slug %}">
+        <a href="#" class="category" data-url="{% url 'products-by-category' c.slug %}" data-slug="{{c.slug}}">{{c.name}}</a>
+      </li>
+    {% endfor %}
+      
+    
+  </ul>
+</div>
+
+<div style="display: inline-block;" class="container">
+    <div class="grid grid--three">
+    {% if not products %}
+    <h5>No products found</h5>
+    {% else %}
+   {% for product in products %}
+      <div class="column">
+        <div class="card project">
+          <a href="{% url 'single-product' product.slug %}" class="project">
+            <img class="project__thumbnail" src="{{product.imageUrl}}" alt="product thumbnail" />
+            <div class="card__body">
+              <h3 class="project__title">{{product.name}}</h3>
+              {% if product.availableQuantity == 0 %}
+              <p style="color: red;">Not available</p>
+              {% else %}
+              <p style="color: limegreen;">Available</p>
+              {% endif %}
+              <p class="project--rating">
+                It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
+              </p>
+            </a>
+              <div class="project__tags">
+                
+                <a href="{% url 'single-product' product.slug %}" style="margin: 3px;" class="btn btn--sub">View</a>
+                <h4 style="display: inline-block; float:right;">{{product.price|floatformat:2}}</h4>
+               
+              </div>
+            </div>
+          
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+  {% include 'pagination.html' with queryset=products custom_range=custom_range %}
+
+  

@@ -1,0 +1,75 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<div style="margin: 10px;" class="column">
+
+  <div class="card project">
+      <div class="card__body">
+          <a href="{% url 'store' %}" class="btn btn--sub">&#x2190; Continue Shopping</a>
+
+          <br>
+          <br>
+
+          <table class="table">
+              <tr>
+                  <th><h5>Items: <strong id="cart-total-qty">{{cart.cart_items_quantity}}</strong></h5></th>
+                  <th><h5>Cart Total: <strong id="total-price">{{cart.get_total_price|floatformat:2}}</strong></h5></th>
+                  <th>
+                      {% if cartItems == 0 %}
+                      <a id="checkout" style="float: right; margin: 5px;" href="javascript:void(0)" class="btn btn--sub" >Checkout</a>
+                      {% else %}
+                      <a id="checkout" style="float: right; margin: 5px;" href="{% url 'checkout' %}" class="btn btn--sub">Checkout</a>
+                      {% endif %}
+                  </th>
+              </tr>   
+          </table>
+          
+      </div>  
+    </div>
+
+    <br>
+
+    <div class="card project">
+      <div class="card__body">
+          <div class="cart-row">
+              <div style="flex: 2;"></div>
+              <div style="flex: 2;"><strong>Item</strong></div>
+              <div style="flex: 1;"><strong>Price</strong></div>
+              <div style="flex: 1;"><strong>Quantity</strong></div>
+              <div style="flex: 1;"><strong>Total</strong></div>
+              <div style="flex: 1;"></div>
+          </div>
+          
+          {% for item in cart %}
+          <div data-index="{{item.product_id}}" class="cart-row product-item">
+              <div style="flex: 2;"><a href="{% url 'single-product' item.product_slug %}"><img class="row-image" src="{{item.product_imageUrl}}" alt="Product image"> </a></div>
+              <div style="flex: 2;"><a href="{% url 'single-product' item.product_slug %}">{{item.product_name}} <br>(Remaining available items: {{item.product_availableItems}})  </a></div>
+              <div style="flex: 1;">{{item.price|floatformat:2}}</div>
+              <div style="flex: 1;">
+                  
+                  <div class="quantity">
+                      <input type="number" id="update-field" data-index="{{item.product_id}}" class="input-qty-cart update-field" data-product="{{item.product_id}}" data-old="" value="{{item.qty}}" id="qtyInput" name="quantity" min="1" max="{{item.product_maxQuantity}}" required>
+                  </div>
+
+              </div>
+              <div id="{{item.product_id}}" style="flex: 1;">{{item.total_price|floatformat:2}}</div>
+              <div style="flex: 1; ">
+                  <button id="delete-button" data-index={{item.product_id}} data-action="remove" 
+                              style="float: right; margin: 5px; background-color:rgb(199, 10, 10); color: white;"
+                               class="btn remove-cart-item delete-button">Remove</button>
+              </div>
+          </div>    
+          {% endfor %}       
+      </div> 
+    </div>
+</div>
+
+<script>
+    document.getElementById('cart').classList.add('sel')
+</script>
+  
+
+
+{% endblock content %}
+

@@ -1,0 +1,102 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="box-element" id="form-wrapper">
+            
+            <div id="formsContainer">
+            <form id="form" class="form" method="POST" action="{% url 'checkout' %}" autocomplete="off" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% if shipping == True %}
+                <div class="row" id="shipping-info">
+                    <hr>
+						<p>Shipping Information:</p>
+						<hr>
+						{% for field in shippingAddressForm %}
+                            {% if shippingAddressForm.errors %}
+                            {% for error in field.errors %}
+                                {% if error != "This field is required." %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                            {% for error in shippingAddressForm.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                            {% endif %}
+                        <div class="form-field">
+                            
+                            {{field}}
+                        </div>
+        
+                        {% endfor %}
+                </div>
+                {% else %}
+                <div class="form-field">
+                    <p  style="margin: 5px;" type="text"><strong>Your cart contains only digital products.</strong></p>
+                </div>
+                {% endif %}
+                
+                <hr>
+                
+                    {% if cartQty == 0 %}
+                    <input id="form-button" class="btn btn--sub"  type="submit" value="Continue" disabled>
+                    {% else %}
+                    <input id="form-button" class="btn btn--sub"  type="submit" value="Continue">
+                    {% endif %}
+                
+            </form>
+        </div>
+        </div>
+
+        <br>
+
+        <div class="box-element hidden" id="payment-info">
+            <small>Paypal Options</small>
+            <div id="paypal-button-container"></div>
+        </div>
+
+        
+      </div>
+
+      <div class="col-lg-6">
+        <div class="box-element">
+            <a  class="btn btn-outline-dark btn--sub" href="{% url 'cart:cart-summary' %}">&#x2190; Back to Cart</a>
+            <hr>
+            <h3>Order Summary</h3>
+            <hr>
+            
+                
+                {% load index %}
+                {% for item in items %}
+                
+                <div class="cart-row">
+                    <div style="flex:2"><img class="row-image" src="{{item.imageUrl}}"></div>
+                    <div style="flex:2"><p>{{item.name}}</p></div>
+                    <div style="flex:1"><p>{{item.price}}</p></div>
+                    <div style="flex:1"><p>x <p class="itemQty">{{ productQtyList|index:forloop.counter0 }}</p> </p></div>
+                    <p>{{index2}}</p>
+                </div>
+                
+                {% endfor %}
+
+                <h5 id="totalPrice">Items: {{cartQty}}</h5>
+                
+                <h5>Total: {{cartTotalPrice|floatformat:2}}</h5>
+                
+        </div>   
+      </div>
+</div>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AfXDNTBc-g6d_4ZI0q8N3vShp2RQXtX6slCx0pONRY5nVVusytlTq4vqhA0yuYyzEYhvbjPDvinStSU4&currency=USD"
+        data-sdk-integration-source="button-factory">
+</script>
+
+
+{% endblock content %}

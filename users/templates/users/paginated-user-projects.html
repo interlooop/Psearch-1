@@ -1,0 +1,21 @@
+<table class="settings__table">
+    {% for pr in projects %}
+    <tr>
+      <td class="settings__thumbnail">
+        <a href="{% url 'project' pr.id %}"><img src="{{pr.imageUrl}}" /></a>
+      </td>
+      <td class="settings__tableInfo">
+        <a href="{% url 'project' pr.id %}">{{pr.title}}</a>
+        <p>{{pr.description|slice:"150"}}</p>
+      </td>
+      <td class="settings__tableActions">
+        <a class="tag tag--pill tag--main settings__btn" href="{% url 'update-project' pr.id %}"><i class="im im-edit"></i> Edit</a>
+        <a class="tag tag--pill tag--main settings__btn" href="{% url 'delete-project' pr.id %}?next=/account"><i class="im im-x-mark-circle-o"></i>
+          Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+    
+  </table>
+
+  {% include 'pagination.html' with queryset=projects custom_range=custom_range %}

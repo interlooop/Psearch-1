@@ -1,0 +1,33 @@
+
+    <div class="content-box">
+        <h3 class="inbox__title">New Messages(<span>{{unreadCount }}</span>)</h3>
+        <h6>Total messages: {{totalMessages}}</h6>
+        <ul class="messages">
+          {% for message in messageRequests %}
+          {% if message.is_read == False %}
+          <li class="message message--unread">
+          {% else %}
+          <li class="message">
+          {% endif %}
+          
+          <div class="cart-row product-item">
+            <div style="flex: 2;"><a href="{% url 'view-message' message.id %}"><span class="message__author">{{message.name}}</span>  </a></div>
+            <div style="flex: 2;"><a href="{% url 'view-message' message.id %}"><span class="message__author">{{message.subject}}</span>  </a></div>
+            <div style="flex: 2;"><a href="{% url 'view-message' message.id %}"><span class="message__author">{{message.created}}</span>  </a></div>
+    
+            
+          
+            <div style="flex: a; ">
+              <a href="{% url 'delete-message' message.id %}?next=/inbox" id="delete-button" data-index={{message.id}} data-action="delete" 
+              style="float: right; margin: 5px; background-color:rgb(199, 10, 10); color: white;"
+              class="btn remove-cart-item">Delete </a>
+            </div> 
+        </div>
+                   
+         </li>
+          {% endfor %}
+        </ul>
+      </div>
+    
+    
+    {% include 'pagination.html' with queryset=messageRequests custom_range=custom_range %}
